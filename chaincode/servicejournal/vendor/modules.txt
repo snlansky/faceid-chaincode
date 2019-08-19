@@ -109,7 +109,7 @@ github.com/ijc/Gotty
 github.com/konsorten/go-windows-terminal-sequences
 # github.com/magiconair/properties v1.8.0
 github.com/magiconair/properties
-# github.com/miekg/pkcs11 v1.0.2
+# github.com/miekg/pkcs11 v1.0.3
 github.com/miekg/pkcs11
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
