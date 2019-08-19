@@ -1,0 +1,27 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: trustchain-fabric
+  name: copychaincode
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      name: copychaincode
+    spec:
+      restartPolicy: "Never"
+      volumes:
+      - name: sharedvolume
+        persistentVolumeClaim:
+          claimName: shared-pvc
+      - name: dockersocket
+        hostPath:
+          path: /var/run/docker.sock
+      containers:
+      - name: copychaincode
+        image: alpine:3.7
+        command: ["sh", "-c", "ls -l /shared/artifacts/chaincode; if [ -d /shared/artifacts/chaincode/__CHAINCODE_NAME__ ]; then rm -rf /shared/artifacts/chaincode/__CHAINCODE_NAME__; fi; while [ ! -d /shared/artifacts/chaincode/__CHAINCODE_NAME__ ]; do echo Waiting for chaincode to be copied; sleep 2; done; sleep 10; ls -l /shared/artifacts/chaincode; "]
+        volumeMounts:
+        - mountPath: /shared
+          name: sharedvolume
