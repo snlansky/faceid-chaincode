@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const Separator = ":"
+const Separator = "."
 
 func GetAddress(stub shim.ChaincodeStubInterface) (string, error) {
 	addr, err := utils.GetAddress(stub)

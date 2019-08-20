@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CHAINCODE_NAME=servicejournal
-CHAINCODE_VERSION=1.3
+CHAINCODE_VERSION=1.5
 CHANNEL_NAME=kdchannel
 
 #set -x
