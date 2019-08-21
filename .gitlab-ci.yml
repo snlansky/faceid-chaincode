@@ -8,7 +8,7 @@ test-deployment:
   script:
     - export KUBECONFIG=$HOME/.kube-ng/config-${CI_ENVIRONMENT_NAME:0:4}
     - chmod +x setupcc.sh
-    - ./setupcc.sh v1 init
+    - ./setupcc.sh v1 upgrade
 
 prod-deployment:
   stage: deploy
