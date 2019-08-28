@@ -20,6 +20,6 @@ type NodeCommon struct {
 	Operation   string `json:"operation" valid:"required"`   // 操作内容
 	Description string `json:"description" valid:"required"` // 处理意见（不知道叫什么）
 	HandlerId   string `json:"handler_id" valid:"required"`  // 处理人id
-	CreateTime  string `json:"create_time" valid:"required"` // 创建时间
+	CreateTime  int64  `json:"create_time" valid:"required"` // 创建时间
 	Extension   string `json:"extension" valid:"optional"`   // 扩展信息
 }
