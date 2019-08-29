@@ -14,10 +14,10 @@ type TicketService struct {
 	ticketTable *TicketTable
 }
 
-func (s *TicketService) Create(stub shim.ChaincodeStubInterface, ticket *TicketCommon) *TicketCommon {
-	//var ticket TicketCommon
-	//err := json.Unmarshal([]byte(ticketJson), &ticket)
-	//rpc.Check(err, rpc.ERR_JSON_UNMARSHAL)
+func (s *TicketService) Create(stub shim.ChaincodeStubInterface, ticketJson string) *TicketCommon {
+	var ticket TicketCommon
+	err := json.Unmarshal([]byte(ticketJson), &ticket)
+	rpc.Check(err, rpc.ERR_JSON_UNMARSHAL)
 
 	mustValidate(&ticket)
 
@@ -34,12 +34,12 @@ func (s *TicketService) Create(stub shim.ChaincodeStubInterface, ticket *TicketC
 		rpc.Throw(ReduplicateCreate)
 	}
 
-	err = s.ticketTable.save(stub, ticket)
+	err = s.ticketTable.save(stub, &ticket)
 	rpc.Check(err, InternalError)
 
 	rpc.Check(base.CreateEvent(stub, AppName, CreateTicketEvent, ticket.Id), InternalError)
 
-	return ticket
+	return &ticket
 }
 
 func (s *TicketService) Update(stub shim.ChaincodeStubInterface, ticketJson string) *TicketCommon {
