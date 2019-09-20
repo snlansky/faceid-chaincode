@@ -16,7 +16,7 @@ func NewTicketTable() *TicketTable {
 	return &TicketTable{ck: lib.NewCompositeKey(TicketTableKey, "Id")}
 }
 
-func (t *TicketTable) save(stub shim.ChaincodeStubInterface, ticket *TicketCommon) error {
+func (t *TicketTable) save(stub shim.ChaincodeStubInterface, ticket *Ticket) error {
 	bytes, err := json.Marshal(ticket)
 	if err != nil {
 		return err
@@ -24,7 +24,7 @@ func (t *TicketTable) save(stub shim.ChaincodeStubInterface, ticket *TicketCommo
 	return t.ck.Insert(stub, []string{ticket.Id}, bytes)
 }
 
-func (t *TicketTable) find(stub shim.ChaincodeStubInterface, id string) (*TicketCommon, error) {
+func (t *TicketTable) find(stub shim.ChaincodeStubInterface, id string) (*Ticket, error) {
 	bytes, err := t.ck.GetValue(stub, []string{id})
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (t *TicketTable) find(stub shim.ChaincodeStubInterface, id string) (*Ticket
 	if bytes == nil || len(bytes) == 0 {
 		return nil, nil
 	}
-	var ticket TicketCommon
+	var ticket Ticket
 	err = json.Unmarshal(bytes, &ticket)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (t *TicketTable) find(stub shim.ChaincodeStubInterface, id string) (*Ticket
 	return &ticket, nil
 }
 
-func (t *TicketTable) update(stub shim.ChaincodeStubInterface, ticket *TicketCommon) error {
+func (t *TicketTable) update(stub shim.ChaincodeStubInterface, ticket *Ticket) error {
 	bytes, err := json.Marshal(ticket)
 	if err != nil {
 		return err

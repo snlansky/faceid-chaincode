@@ -16,7 +16,7 @@ func NewNodeTable() *NodeTable {
 	return &NodeTable{ck: lib.NewCompositeKey(NodeTableKey, "TicketId", "NodeId")}
 }
 
-func (t *NodeTable) save(stub shim.ChaincodeStubInterface, node *NodeCommon) error {
+func (t *NodeTable) save(stub shim.ChaincodeStubInterface, node *Node) error {
 	buf, err := json.Marshal(node)
 	if err != nil {
 		return err
@@ -24,7 +24,7 @@ func (t *NodeTable) save(stub shim.ChaincodeStubInterface, node *NodeCommon) err
 	return t.ck.Insert(stub, []string{node.TicketID, node.Id}, buf)
 }
 
-func (t *NodeTable) find(stub shim.ChaincodeStubInterface, ticketId, nodeId string) (*NodeCommon, error) {
+func (t *NodeTable) find(stub shim.ChaincodeStubInterface, ticketId, nodeId string) (*Node, error) {
 	bytes, err := t.ck.GetValue(stub, []string{ticketId, nodeId})
 	if err != nil {
 		return nil, err
@@ -34,11 +34,19 @@ func (t *NodeTable) find(stub shim.ChaincodeStubInterface, ticketId, nodeId stri
 		return nil, nil
 	}
 
-	var node NodeCommon
+	var node Node
 	err = json.Unmarshal(bytes, &node)
 	if err != nil {
 		return nil, err
 	}
 
 	return &node, err
+}
+
+func (t *NodeTable) update(stub shim.ChaincodeStubInterface, node *Node) error {
+	bytes, err := json.Marshal(node)
+	if err != nil {
+		return err
+	}
+	return t.ck.Update(stub, []string{node.TicketID, node.Id}, bytes)
 }

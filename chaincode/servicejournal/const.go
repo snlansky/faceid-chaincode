@@ -21,4 +21,5 @@ const (
 	CreateTicketEvent = "CreateTicket"
 	UpdateTicketEvent = "UpdateTicket"
 	CreateNodeEvent   = "CreateNode"
+	UpdateNodeEvent = "UpdateNode"
 )
