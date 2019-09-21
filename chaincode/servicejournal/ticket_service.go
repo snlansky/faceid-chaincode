@@ -40,6 +40,7 @@ func (s *TicketService) Create(stub shim.ChaincodeStubInterface, ticketRequestJs
 			Title:       req.Title,
 			Description: req.Description,
 			Products:    req.Products,
+			System:      req.System,
 			Status:      req.Status,
 			OwnerId:     req.OwnerId,
 			SubmitterId: req.SubmitterId,

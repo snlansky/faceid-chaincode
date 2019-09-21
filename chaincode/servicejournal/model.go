@@ -7,6 +7,7 @@ type TicketCommon struct {
 	Title       string   `json:"title" valid:"required"`        // 标题（需要能更新）
 	Description string   `json:"description" valid:"optional"`  // 描述
 	Products    []string `json:"produces" valid:"optional"`     // 产品信息
+	System      string   `json:"system" valid:"required"`       // 来源系统
 	Status      string   `json:"status" valid:"required"`       // 状态
 	OwnerId     Address  `json:"owner_id" valid:"required"`     // 所有者数字身份
 	SubmitterId Address  `json:"submitter_id" valid:"required"` // 提单人数字身份
