@@ -17,7 +17,7 @@ spec:
             claimName: shared-pvc
       containers:
         - name: chaincodeinstall1
-          image: harbor-k8s.kingdeeresearch.com/kbaas-ce/fabric-tools:kbaas-ce-1.3-21169556f
+          image: hyperledger/fabric-tools:1.4
           command: ["sh", "-c", "echo $GOPATH; rm -rf $GOPATH/src/*; cp -r /shared/artifacts/chaincode $GOPATH/src/; ls $GOPATH/src; peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p __CHAINCODE_NAME__/"]
           env:
             - name: CHAINCODE_NAME
