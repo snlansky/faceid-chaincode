@@ -12,15 +12,15 @@ func InitFunction(stub shim.ChaincodeStubInterface) pb.Response {
 
 	addr, err := utils.GetAddress(stub)
 	if err != nil {
-		log.Errorf("get super account cert error：%s", err)
+		logger.Errorf("get super account cert error：%s", err)
 		panic(err)
 	}
 	err = stub.PutState(SUPER, addr)
 	if err != nil {
-		log.Errorf("save super account error：%s", err)
+		logger.Errorf("save super account error：%s", err)
 		panic(err)
 	}
 
-	log.Infof("init by super account:%s", string(addr))
+	logger.Infof("init by super account:%s", string(addr))
 	return shim.Success([]byte("SUCCESS"))
 }

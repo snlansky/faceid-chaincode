@@ -6,7 +6,7 @@ import (
 	"github.com/snlansky/apk/rpc"
 )
 
-var log = shim.NewLogger("servicejournal.chaincode")
+var logger = shim.NewLogger("servicejournal.chaincode")
 
 func main() {
 	helper := rpc.NewHelper(InitFunction)
@@ -16,6 +16,6 @@ func main() {
 
 	err := shim.Start(helper)
 	if err != nil {
-		log.Errorf("Error starting chaincode - %s", err)
+		logger.Errorf("Error starting chaincode - %s", err)
 	}
 }
