@@ -34,6 +34,13 @@ func (s *TicketService) Create(stub shim.ChaincodeStubInterface, ticketRequestJs
 	address, err := base.GetAddress(stub)
 	rpc.Check(err, InternalError)
 
+	details := map[string]string{}
+	if req.Details != nil {
+		for k, v := range req.Details {
+			details[k] = v
+		}
+	}
+
 	id := stub.GetTxID()
 	ticket := &Ticket{
 		TicketCommon: TicketCommon{
@@ -49,6 +56,7 @@ func (s *TicketService) Create(stub shim.ChaincodeStubInterface, ticketRequestJs
 			CreateTime:  req.CreateTime,
 			UpdateTime:  req.UpdateTime,
 			UploadTime:  base.MustGetTimestamp(stub),
+			Details:     details,
 		},
 		SourceList: []Address{},
 		NodeList:   []string{},
@@ -134,6 +142,10 @@ func (s *TicketService) Update(stub shim.ChaincodeStubInterface, ticketRequestJs
 	ticket.Title = req.Title
 	ticket.Status = req.Status
 	ticket.UpdateTime = req.UpdateTime
+
+	for k, v := range req.Details {
+		ticket.Details[k] = v
+	}
 
 	addr := Address(base.MustGetAddress(stub))
 
