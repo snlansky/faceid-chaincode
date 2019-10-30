@@ -34,6 +34,13 @@ func (s *NodeService) Create(stub shim.ChaincodeStubInterface, nodeJson string) 
 		rpc.Throw(ReduplicateCreate)
 	}
 
+	details := map[string]string{}
+	if req.Details != nil {
+		for k, v := range req.Details {
+			details[k] = v
+		}
+	}
+
 	addr := Address(base.MustGetAddress(stub))
 
 	node := &Node{
@@ -47,6 +54,7 @@ func (s *NodeService) Create(stub shim.ChaincodeStubInterface, nodeJson string) 
 			UploadTime:  base.MustGetTimestamp(stub),
 			Description: req.Description,
 			System:      req.System,
+			Details:     details,
 		},
 		SourceList: []Address{},
 		Metadata:   map[Address]string{},
@@ -93,6 +101,12 @@ func (s *NodeService) Update(stub shim.ChaincodeStubInterface, nodeJson string) 
 		node.SourceList = append(node.SourceList, addr)
 	}
 	node.Metadata[addr] = req.Extension
+
+	if req.Details != nil {
+		for k, v := range req.Details {
+			node.Details[k] = v
+		}
+	}
 
 	err = s.ticketTable.update(stub, ticket)
 	rpc.Check(err, "ERR_UPDATE_FAILED")

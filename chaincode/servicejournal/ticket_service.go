@@ -143,8 +143,10 @@ func (s *TicketService) Update(stub shim.ChaincodeStubInterface, ticketRequestJs
 	ticket.Status = req.Status
 	ticket.UpdateTime = req.UpdateTime
 
-	for k, v := range req.Details {
-		ticket.Details[k] = v
+	if req.Details != nil {
+		for k, v := range req.Details {
+			ticket.Details[k] = v
+		}
 	}
 
 	addr := Address(base.MustGetAddress(stub))
