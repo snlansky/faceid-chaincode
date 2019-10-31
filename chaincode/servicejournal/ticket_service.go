@@ -49,6 +49,7 @@ func (s *TicketService) Create(stub shim.ChaincodeStubInterface, ticketRequestJs
 			Description: req.Description,
 			Products:    req.Products,
 			System:      req.System,
+			ServiceType: req.ServiceType,
 			Status:      req.Status,
 			OwnerId:     req.OwnerId,
 			SubmitterId: req.SubmitterId,
@@ -109,7 +110,6 @@ func (s *TicketService) FindIdMapping(stub shim.ChaincodeStubInterface, id strin
 	ticketId, ids, err := s.mappingTable.find(stub, addr, id)
 	rpc.Check(err, InternalError)
 
-
 	// 这里不判读空
 	return &IdMapping{
 		TicketId:    ticketId,
@@ -141,6 +141,7 @@ func (s *TicketService) Update(stub shim.ChaincodeStubInterface, ticketRequestJs
 
 	ticket.Title = req.Title
 	ticket.Status = req.Status
+	ticket.ServiceType = req.ServiceType
 	ticket.UpdateTime = req.UpdateTime
 
 	if req.Details != nil {
@@ -189,6 +190,6 @@ func mustValidate(obj interface{}) {
 	validate, err := govalidator.ValidateStruct(obj)
 	rpc.Check(err, rpc.ERR_PARAM_INVALID)
 	if !validate {
-		rpc.Throw("ERR_STRUCT_VALIDATE" )
+		rpc.Throw("ERR_STRUCT_VALIDATE")
 	}
 }
