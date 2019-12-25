@@ -29,7 +29,7 @@ func (svc *FaceIDService) RegisterFaceID(stub blclibs.IContractStub, id *FaceID)
 	id.ID = stub.GetTxID()
 	ts, err := stub.GetTxTimestamp()
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
-	id.Timestamp = ts.Seconds
+	id.Timestamp = ts.Unix()
 
 	err = svc.faceIDTable.Save(stub, addr, id)
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
@@ -66,7 +66,7 @@ func (svc *FaceIDService) Record(stub blclibs.IContractStub, id *FaceID) {
 	id.ID = stub.GetTxID()
 	ts, err := stub.GetTxTimestamp()
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
-	id.Timestamp = ts.Seconds
+	id.Timestamp = ts.Unix()
 
 	err = svc.faceIDTable.Save(stub, addr, id)
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)

@@ -6,10 +6,11 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
-	"github.com/golang/protobuf/ptypes/timestamp"
+	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/pkg/errors"
 	"github.com/snlansky/blclibs"
+	"time"
 )
 
 type FabricContractStub struct {
@@ -95,8 +96,25 @@ func (f *FabricContractStub) SplitCompositeKey(compositeKey string) (string, []s
 	return f.stub.SplitCompositeKey(compositeKey)
 }
 
-func (f *FabricContractStub) GetTxTimestamp() (*timestamp.Timestamp, error) {
-	return f.stub.GetTxTimestamp()
+func (f *FabricContractStub) GetTxTimestamp() (time.Time, error) {
+	ts, err := f.stub.GetTxTimestamp()
+	if err != nil {
+		return time.Time{}, err
+	}
+	if ts == nil {
+		return time.Time{}, errors.New("timestamp: nil Timestamp")
+	}
+	if ts.Seconds < -62135596800 {
+		return time.Time{}, fmt.Errorf("timestamp: %v before 0001-01-01", ts)
+	}
+	if ts.Seconds >= 253402300800 {
+		return time.Time{}, fmt.Errorf("timestamp: %v after 10000-01-01", ts)
+	}
+	if ts.Nanos < 0 || ts.Nanos >= 1e9 {
+		return time.Time{}, fmt.Errorf("timestamp: %v: nanos not in range [0, 1e9)", ts)
+	}
+
+	return time.Unix(ts.Seconds, int64(ts.Nanos)).UTC(), nil
 }
 
 func (f *FabricContractStub) SetEvent(name string, payload []byte) error {

@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  namespace: trustchain-fabric
+  namespace: servicechain-fabric
   name: copychaincode
 spec:
   backoffLimit: 1

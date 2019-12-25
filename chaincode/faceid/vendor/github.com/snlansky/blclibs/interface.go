@@ -1,6 +1,8 @@
 package blclibs
 
-import "github.com/golang/protobuf/ptypes/timestamp"
+import (
+	"time"
+)
 
 type IContractStub interface {
 	GetArgs() [][]byte
@@ -12,7 +14,7 @@ type IContractStub interface {
 	DelState(key string) ([]byte, error)
 	CreateCompositeKey(objectType string, attributes []string) (string, error)
 	SplitCompositeKey(compositeKey string) (string, []string, error)
-	GetTxTimestamp() (*timestamp.Timestamp, error)
+	GetTxTimestamp() (time.Time, error)
 	SetEvent(name string, payload []byte) error
 }
 

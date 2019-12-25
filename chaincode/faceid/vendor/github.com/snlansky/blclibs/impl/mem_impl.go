@@ -1,7 +1,6 @@
 package impl
 
 import (
-	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/snlansky/blclibs"
 	"time"
 )
@@ -54,12 +53,8 @@ func (m *MemImpl) SplitCompositeKey(compositeKey string) (string, []string, erro
 	return blclibs.SplitCompositeKey(compositeKey)
 }
 
-func (m *MemImpl) GetTxTimestamp() (*timestamp.Timestamp, error) {
-	t := time.Now()
-	return &timestamp.Timestamp{
-		Seconds:              int64(t.Second()),
-		Nanos:                int32(t.Nanosecond()),
-	}, nil
+func (m *MemImpl) GetTxTimestamp() (time.Time, error) {
+	return time.Now(), nil
 }
 
 func (m *MemImpl) SetEvent(name string, payload []byte) error {
