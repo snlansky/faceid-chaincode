@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/asaskevich/govalidator"
 	"github.com/snlansky/blclibs"
 	"github.com/snlansky/glibs/rpc"
 )
@@ -81,9 +80,6 @@ func (svc *FaceIDService) HistoryFaceIDs(stub blclibs.IContractStub, req *Reques
 	addr := blclibs.Address(address)
 
 	mustValidate(req)
-	if req.StartTime < 0 || req.EndTime <= 0 {
-		rpc.Throw("timestamp must > 0")
-	}
 
 	ids, err := svc.faceIDIndex.Get(stub, addr, req)
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
@@ -97,10 +93,8 @@ func (svc *FaceIDService) HistoryFaceIDs(stub blclibs.IContractStub, req *Reques
 	return faces
 }
 
-func mustValidate(obj interface{}) {
-	v, err := govalidator.ValidateStruct(obj)
-	rpc.Check(err, InternalError)
-	if !v {
+func mustValidate(obj Validator) {
+	if !obj.Validate() {
 		rpc.Throw("ERR_STRUCT_VALIDATE")
 	}
 }

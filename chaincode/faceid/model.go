@@ -1,5 +1,9 @@
 package main
 
+type Validator interface {
+	Validate() bool
+}
+
 type FaceID struct {
 	ID         string                 `json:"id" valid:"optional"`          // ID
 	SourceType string                 `json:"source_type" valid:"required"` // 资源类型
@@ -10,10 +14,24 @@ type FaceID struct {
 	Timestamp  int64                  `json:"timestamp" valid:"optional"`   // 时间戳(s)
 }
 
+func (f *FaceID) Validate() bool {
+	if f.SourceType == "" || f.SourceHash == "" || f.Algorithm == "" {
+		return false
+	}
+	return true
+}
+
 type RequestFaceIDHistory struct {
 	StartTime int64    `json:"start_time" valid:"optional"` // 开始时间
 	EndTime   int64    `json:"end_time" valid:"required"`   // 结束时间
 	Labels    []string `json:"labels" valid:"optional"`     // 标签
+}
+
+func (r *RequestFaceIDHistory) Validate() bool {
+	if r.EndTime <= 0 || r.StartTime < 0 {
+		return false
+	}
+	return true
 }
 
 type TimeIndex struct {
