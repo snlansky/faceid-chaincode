@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-CHAINCODE_NAME=servicejournal
-CHAINCODE_VERSION=2.1
-CHANNEL_NAME=kdchannel
+CHAINCODE_NAME=faceid
+CHAINCODE_VERSION=1.0
+CHANNEL_NAME=studychain
 
 #set -x
 
@@ -114,9 +114,3 @@ else
     checkJob chaincodeupgrade
     echo "Chaincode Upgrade Completed Successfully"
 fi
-
-
-
-
-
-
