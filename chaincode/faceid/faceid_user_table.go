@@ -28,6 +28,11 @@ func (userTable *FaceIDUserTable) Get(stub blclibs.IContractStub, address blclib
 	if err != nil {
 		return nil, err
 	}
+
+	if value == nil || len(value) == 0 {
+		return nil, nil
+	}
+
 	var u User
 	err = json.Unmarshal(value, &u)
 	if err != nil {

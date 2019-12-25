@@ -28,6 +28,11 @@ func (t *FaceIDTable) Get(stub blclibs.IContractStub, addr blclibs.Address, id s
 	if err != nil {
 		return nil, err
 	}
+
+	if value == nil || len(value) == 0 {
+		return nil, nil
+	}
+
 	var faceId FaceID
 	err = json.Unmarshal(value, &faceId)
 	if err != nil {
