@@ -40,5 +40,6 @@ type TimeIndex struct {
 }
 
 type User struct {
-	RegisterFaceID string
+	RegisterFaceID      *FaceID
+	RegisterCertificate *FaceID
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CHAINCODE_NAME=faceid
-CHAINCODE_VERSION=2.1
+CHAINCODE_VERSION=2.3
 CHANNEL_NAME=studychain
 
 #set -x

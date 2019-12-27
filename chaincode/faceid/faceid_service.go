@@ -30,30 +30,42 @@ func (svc *FaceIDService) RegisterFaceID(stub blclibs.IContractStub, id *FaceID)
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
 	id.Timestamp = ts.Unix()
 
-	err = svc.faceIDTable.Save(stub, addr, id)
-	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
+	user := svc.makeUser(stub, addr)
+	user.RegisterFaceID = id
 
-	err = svc.faceIDUserTable.Save(stub, addr, &User{RegisterFaceID: id.ID})
+	err = svc.faceIDTable.Save(stub, addr, id)
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
 
 	err = svc.faceIDIndex.Save(stub, addr, id)
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
+
+	err = svc.faceIDUserTable.Save(stub, addr, user)
+	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
 }
 
-func (svc *FaceIDService) GetFaceID(stub blclibs.IContractStub) *FaceID {
+func (svc *FaceIDService) RegisterCertificate(stub blclibs.IContractStub, id *FaceID) {
 	address, err := stub.GetAddress()
 	rpc.Check(err)
 	addr := blclibs.Address(address)
-	user, err := svc.faceIDUserTable.Get(stub, addr)
-	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
 
-	if user == nil {
-		return &FaceID{}
-	}
-
-	faceID, err := svc.faceIDTable.Get(stub, addr, user.RegisterFaceID)
+	mustValidate(id)
+	id.ID = stub.GetTxID()
+	ts, err := stub.GetTxTimestamp()
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
-	return faceID
+	id.Timestamp = ts.Unix()
+
+	user := svc.makeUser(stub, addr)
+	user.RegisterCertificate = id
+
+	err = svc.faceIDUserTable.Save(stub, addr, user)
+	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
+}
+
+func (svc *FaceIDService) GetUser(stub blclibs.IContractStub) *User {
+	address, err := stub.GetAddress()
+	rpc.Check(err)
+	addr := blclibs.Address(address)
+	return svc.makeUser(stub, addr)
 }
 
 func (svc *FaceIDService) Record(stub blclibs.IContractStub, id *FaceID) {
@@ -66,6 +78,13 @@ func (svc *FaceIDService) Record(stub blclibs.IContractStub, id *FaceID) {
 	ts, err := stub.GetTxTimestamp()
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
 	id.Timestamp = ts.Unix()
+
+	// registration check
+	check, err := svc.registrationCheck(stub, addr)
+	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
+	if !check {
+		rpc.Throw("not registration")
+	}
 
 	err = svc.faceIDTable.Save(stub, addr, id)
 	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
@@ -91,6 +110,24 @@ func (svc *FaceIDService) HistoryFaceIDs(stub blclibs.IContractStub, req *Reques
 		faces = append(faces, faceID)
 	}
 	return faces
+}
+
+func (svc *FaceIDService) makeUser(stub blclibs.IContractStub, addr blclibs.Address) *User {
+	user, err := svc.faceIDUserTable.Get(stub, addr)
+	rpc.Check(err, rpc.ERR_INTERNAL_INVALID)
+
+	if user == nil {
+		user = &User{
+			RegisterFaceID:      nil,
+			RegisterCertificate: nil,
+		}
+	}
+	return user
+}
+
+func (svc *FaceIDService) registrationCheck(stub blclibs.IContractStub, addr blclibs.Address) (bool, error) {
+	user, err := svc.faceIDUserTable.Get(stub, addr)
+	return user != nil, err
 }
 
 func mustValidate(obj Validator) {
